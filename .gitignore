@@ -3,3 +3,4 @@ Manifest.txt
 vijual.jar
 lib
 classes
+.clj-kondo/.cache/
