@@ -44,8 +44,8 @@
 ;;   returns the floor of the square root and the "remainder".
 
 (ns
-  ^{:author "Mark Engelberg",
-     :doc "Math functions that deal intelligently with the various
+ ^{:author "Mark Engelberg",
+   :doc "Math functions that deal intelligently with the various
 types in Clojure's numeric tower, as well as math functions
 commonly found in Scheme implementations.
 
@@ -87,7 +87,7 @@ exact-integer-sqrt - Implements a math function from the R6RS Scheme
   returns [s r] where k = s^2+r and k < (s+1)^2.  In other words, it
   returns the floor of the square root and the \"remainder\".
 "}
-  clojure.contrib.math)
+ clojure.contrib.math)
 
 (derive ::integer ::exact)
 (derive java.lang.Integer ::integer)
@@ -99,7 +99,7 @@ exact-integer-sqrt - Implements a math function from the R6RS Scheme
 (derive java.lang.Float ::inexact)
 
 (defmulti ^{:arglists '([base pow])
-	     :doc "(expt base pow) is base to the pow power.
+            :doc "(expt base pow) is base to the pow power.
 Returns an exact number if the base is an exact number and the power is an integer, otherwise returns a double."}
   expt (fn [x y] [(class x) (class y)]))
 
@@ -107,27 +107,27 @@ Returns an exact number if the base is an exact number and the power is an integ
   (loop [n pow, y (num 1), z base]
     (let [t (bit-and n 1), n (bit-shift-right n 1)]
       (cond
-       (zero? t) (recur n y (* z z))
-       (zero? n) (* z y)
-       :else (recur n (* z y) (* z z))))))
+        (zero? t) (recur n y (* z z))
+        (zero? n) (* z y)
+        :else (recur n (* z y) (* z z))))))
 
 (defmethod expt [::exact ::integer] [base pow]
   (cond
-   (pos? pow) (expt-int base pow)
-   (zero? pow) 1
-   :else (/ 1 (expt-int base (- pow)))))
+    (pos? pow) (expt-int base pow)
+    (zero? pow) 1
+    :else (/ 1 (expt-int base (- pow)))))
 
 (defmethod expt :default [base pow] (Math/pow base pow))
 
 (defn abs "(abs n) is the absolute value of n" [n]
   (cond
-   (not (number? n)) (throw (IllegalArgumentException.
-			     "abs requires a number"))
-   (neg? n) (- n)
-   :else n))
+    (not (number? n)) (throw (IllegalArgumentException.
+                              "abs requires a number"))
+    (neg? n) (- n)
+    :else n))
 
 (defmulti ^{:arglists '([n])
-	     :doc "(floor n) returns the greatest integer less than or equal to n.
+            :doc "(floor n) returns the greatest integer less than or equal to n.
 If n is an exact number, floor returns an integer, otherwise a double."}
   floor class)
 (defmethod floor ::integer [n] n)
@@ -139,7 +139,7 @@ If n is an exact number, floor returns an integer, otherwise a double."}
   (Math/floor n))
 
 (defmulti ^{:arglists '([n])
-	     :doc "(ceil n) returns the least integer greater than or equal to n.
+            :doc "(ceil n) returns the least integer greater than or equal to n.
 If n is an exact number, ceil returns an integer, otherwise a double."}
   ceil class)
 (defmethod ceil ::integer [n] n)
@@ -151,7 +151,7 @@ If n is an exact number, ceil returns an integer, otherwise a double."}
   (Math/ceil n))
 
 (defmulti ^{:arglists '([n])
-	     :doc "(round n) rounds to the nearest integer.
+            :doc "(round n) rounds to the nearest integer.
 round always returns an integer.  Rounds up for values exactly in between two integers."}
   round class)
 (defmethod round ::integer [n] n)
@@ -164,7 +164,7 @@ round always returns an integer.  Rounds up for values exactly in between two in
     (throw (IllegalArgumentException. "gcd requires two integers"))
     (loop [a (abs a) b (abs b)]
       (if (zero? b) a,
-	  (recur b (mod a b))))))
+          (recur b (mod a b))))))
 
 (defn lcm
   "(lcm a b) returns the least common multiple of a and b"
@@ -188,20 +188,20 @@ round always returns an integer.  Rounds up for values exactly in between two in
 ;; Input n must be a non-negative integer
 (defn- integer-sqrt [n]
   (cond
-   (> n 24)
-   (let [n-len (integer-length n)]
-     (loop [init-value (if (even? n-len)
-			 (bit-shift-left 1 (bit-shift-right n-len 1))
-			 (bit-shift-left 2 (bit-shift-right n-len 1)))]
-       (let [iterated-value (bit-shift-right (+ init-value (quot n init-value)) 1)]
-	 (if (>= iterated-value init-value)
-	   init-value
-	   (recur iterated-value)))))
-   (> n 15) 4
-   (> n  8) 3
-   (> n  3) 2
-   (> n  0) 1
-   (> n -1) 0))
+    (> n 24)
+    (let [n-len (integer-length n)]
+      (loop [init-value (if (even? n-len)
+                          (bit-shift-left 1 (bit-shift-right n-len 1))
+                          (bit-shift-left 2 (bit-shift-right n-len 1)))]
+        (let [iterated-value (bit-shift-right (+ init-value (quot n init-value)) 1)]
+          (if (>= iterated-value init-value)
+            init-value
+            (recur iterated-value)))))
+    (> n 15) 4
+    (> n  8) 3
+    (> n  3) 2
+    (> n  0) 1
+    (> n -1) 0))
 
 (defn exact-integer-sqrt "(exact-integer-sqrt n) expects a non-negative integer n, and returns [s r] where n = s^2+r and n < (s+1)^2.  In other words, it returns the floor of the square root and the 'remainder'.
 For example, (exact-integer-sqrt 15) is [3 6] because 15 = 3^2+6."
@@ -209,39 +209,39 @@ For example, (exact-integer-sqrt 15) is [3 6] because 15 = 3^2+6."
   (if (or (not (integer? n)) (neg? n))
     (throw (IllegalArgumentException. "exact-integer-sqrt requires a non-negative integer"))
     (let [isqrt (integer-sqrt n),
-	  error (- n (* isqrt isqrt))]
+          error (- n (* isqrt isqrt))]
       [isqrt error])))
 
 (defmulti ^{:arglists '([n])
-	     :doc "Square root, but returns exact number if possible."}
+            :doc "Square root, but returns exact number if possible."}
   sqrt class)
 (defmethod sqrt ::integer [n]
   (if (neg? n) Double/NaN
       (let [isqrt (integer-sqrt n),
-	    error (- n (* isqrt isqrt))]
-	(if (zero? error) isqrt
-	    (Math/sqrt n)))))
+            error (- n (* isqrt isqrt))]
+        (if (zero? error) isqrt
+            (Math/sqrt n)))))
 
 (defmethod sqrt clojure.lang.Ratio [n]
   (if (neg? n) Double/NaN
       (let [numerator (.numerator n),
-	    denominator (.denominator n),
-	    sqrtnum (sqrt numerator)]
-	(if (float? sqrtnum)
-	  (Math/sqrt n)
-	  (let [sqrtden (sqrt denominator)]
-	    (if (float? sqrtnum)
-	      (Math/sqrt n)
-	      (/ sqrtnum sqrtden)))))))
+            denominator (.denominator n),
+            sqrtnum (sqrt numerator)]
+        (if (float? sqrtnum)
+          (Math/sqrt n)
+          (let [sqrtden (sqrt denominator)]
+            (if (float? sqrtnum)
+              (Math/sqrt n)
+              (/ sqrtnum sqrtden)))))))
 
 (defmethod sqrt java.math.BigDecimal [n]
   (if (neg? n) Double/NaN
       (let [frac (rationalize n),
-	    sqrtfrac (sqrt frac)]
-	(if (ratio? sqrtfrac)
-	  (/ (BigDecimal. (.numerator sqrtfrac))
-	     (BigDecimal. (.denominator sqrtfrac)))
-	  sqrtfrac))))
+            sqrtfrac (sqrt frac)]
+        (if (ratio? sqrtfrac)
+          (/ (BigDecimal. (.numerator sqrtfrac))
+             (BigDecimal. (.denominator sqrtfrac)))
+          sqrtfrac))))
 
 (defmethod sqrt :default [n]
   (Math/sqrt n))

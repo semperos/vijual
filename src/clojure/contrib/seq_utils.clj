@@ -25,14 +25,14 @@
 ;;
 
 (ns
-  ^{:author "Stuart Sierra (and others)",
-    :deprecated "1.2"
-    :doc "Sequence utilities for Clojure"}
-  clojure.contrib.seq-utils
-  (:import (java.util.concurrent LinkedBlockingQueue TimeUnit)
-           (java.lang.ref WeakReference))
+ ^{:author "Stuart Sierra (and others)",
+   :deprecated "1.2"
+   :doc "Sequence utilities for Clojure"}
+ clojure.contrib.seq-utils
+  (:import
+   (java.lang.ref WeakReference)
+   (java.util.concurrent LinkedBlockingQueue TimeUnit))
   (:refer-clojure :exclude [frequencies shuffle partition-by reductions partition-all group-by flatten]))
-
 
 ;; 'flatten' written by Rich Hickey,
 ;; see http://groups.google.com/group/clojure/msg/385098fabfcaad9b
@@ -97,24 +97,23 @@
   {:deprecated "1.2"}
   [coll]
   (reduce (fn [counts x]
-              (assoc counts x (inc (get counts x 0))))
+            (assoc counts x (inc (get counts x 0))))
           {} coll))
 
 ;; recursive sequence helpers by Christophe Grand
 ;; see http://clj-me.blogspot.com/2009/01/recursive-seqs.html
 (defmacro rec-seq
- "Similar to lazy-seq but binds the resulting seq to the supplied
+  "Similar to lazy-seq but binds the resulting seq to the supplied
   binding-name, allowing for recursive expressions."
- [binding-name & body]
+  [binding-name & body]
   `(let [s# (atom nil)]
      (reset! s# (lazy-seq (let [~binding-name @s#] ~@body)))))
 
 (defmacro rec-cat
- "Similar to lazy-cat but binds the resulting sequence to the supplied
+  "Similar to lazy-cat but binds the resulting sequence to the supplied
   binding-name, allowing for recursive expressions."
- [binding-name & exprs]
+  [binding-name & exprs]
   `(rec-seq ~binding-name (lazy-cat ~@exprs)))
-
 
 ;; reductions by Chris Houser
 ;; see http://groups.google.com/group/clojure/browse_thread/thread/3edf6e82617e18e0/58d9e319ad92aa5f?#58d9e319ad92aa5f
@@ -146,11 +145,11 @@
   include lists with fewer than n items at the end."
   {:deprecated "1.2"}
   ([n coll]
-     (partition-all n n coll))
+   (partition-all n n coll))
   ([n step coll]
-     (lazy-seq
-      (when-let [s (seq coll)]
-        (cons (take n s) (partition-all n step (drop step s)))))))
+   (lazy-seq
+    (when-let [s (seq coll)]
+      (cons (take n s) (partition-all n step (drop step s)))))))
 
 (defn shuffle
   "DEPRECATED. Prefer clojure.core version.
@@ -168,7 +167,6 @@
   [s]
   (nth s (rand-int (count s))))
 
-
 ;; seq-on written by Konrad Hinsen
 (defmulti seq-on
   "Returns a seq on the object s. Works like the built-in seq but as
@@ -179,7 +177,6 @@
 (defmethod seq-on :default
   [s]
   (seq s))
-
 
 (defn find-first
   "Returns the first item of coll for which (pred item) returns logical true.
@@ -198,32 +195,32 @@
   filler-func has pushed onto the queue, blocking if needed until each
   next element becomes available.  filler-func's return value is ignored."
   ([filler-func & optseq]
-    (let [opts (apply array-map optseq)
-          apoll (:alive-poll opts 1)
-          q (LinkedBlockingQueue. (:queue-size opts 1))
-          NIL (Object.) ;nil sentinel since LBQ doesn't support nils
-          weak-target (Object.)
-          alive? (WeakReference. weak-target)
-          fill (fn fill [x]
-                 (if (.get alive?)
-                   (if (.offer q (if (nil? x) NIL x) apoll TimeUnit/SECONDS)
-                     x
-                     (recur x))
-                   (throw (Exception. "abandoned"))))
-          f (future
-              (try
-                (filler-func fill)
-                (finally
-                  (.put q q))) ;q itself is eos sentinel
-              nil)] ; set future's value to nil
-      ((fn drain []
-         weak-target ; force closing over this object
-         (lazy-seq
-           (let [x (.take q)]
-             (if (identical? x q)
-               @f  ;will be nil, touch just to propagate errors
-               (cons (if (identical? x NIL) nil x)
-                     (drain))))))))))
+   (let [opts (apply array-map optseq)
+         apoll (:alive-poll opts 1)
+         q (LinkedBlockingQueue. (:queue-size opts 1))
+         NIL (Object.) ;nil sentinel since LBQ doesn't support nils
+         weak-target (Object.)
+         alive? (WeakReference. weak-target)
+         fill (fn fill [x]
+                (if (.get alive?)
+                  (if (.offer q (if (nil? x) NIL x) apoll TimeUnit/SECONDS)
+                    x
+                    (recur x))
+                  (throw (Exception. "abandoned"))))
+         f (future
+             (try
+               (filler-func fill)
+               (finally
+                 (.put q q))) ;q itself is eos sentinel
+             nil)] ; set future's value to nil
+     ((fn drain []
+        weak-target ; force closing over this object
+        (lazy-seq
+         (let [x (.take q)]
+           (if (identical? x q)
+             @f  ;will be nil, touch just to propagate errors
+             (cons (if (identical? x NIL) nil x)
+                   (drain))))))))))
 
 (defn positions
   "Returns a lazy sequence containing the positions at which pred
