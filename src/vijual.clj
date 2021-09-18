@@ -9,6 +9,7 @@
    (javax.imageio ImageIO)))
 
 ;;Maintained By Conrad Barski- Licensed under GPLV3
+;;Edited by Daniel Gregoire
 
 ;; Common functions to all layout algorithms
 

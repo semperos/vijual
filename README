@@ -1,6 +1,13 @@
-# vijual
+# FORK of vijual
 
 Vijual is a graph layout engine conceptually similar to graphviz. However, it uses different layout algorithms, creating graphs with a different aesthetic. Vijual uses specialized algorithms for optimal rendering of trees, binary trees, directed, and undirected graphs. Also, it has robust abilities for generating attractive ASCII graphs (as well as traditional bitmap graphs) making it well suited for debugging and exploratory programming directly from the Clojure REPL. Vijual is still an alpha-grade project at this time- Expect many improvements and changes to this library in the near future.
+
+This repository is a fork of Conrad Barski's original with the following primary changes:
+
+- Clojure contrib (no longer maintained) source has been copied into this repository directly, so there are no external dependencies.
+- A couple of changes were made to allow all the examples at the bottom of `vijual.clj` to run without errors.
+- Addition of `deps.edn` file so the repo can be used via modern Clojure tooling.
+- Cleanup and formatting using clojure-lsp, clj-kondo, and cljfmt
 
 ## Usage
 
