@@ -1,6 +1,7 @@
 (ns vijual
-  (:use clojure.contrib.math)
-  (:use clojure.contrib.seq-utils)
+  (:require
+    [clojure.contrib.math :refer [abs ceil floor]]
+    [clojure.contrib.seq-utils :refer [positions]])
   (:import (java.io File)
            (javax.imageio ImageIO)
            (java.awt Color)
