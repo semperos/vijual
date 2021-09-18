@@ -4,3 +4,6 @@ vijual.jar
 lib
 classes
 .clj-kondo/.cache/
+.cpcache
+.lsp/.cache
+.nrepl-port
