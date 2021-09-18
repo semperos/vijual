@@ -843,12 +843,12 @@
                                                                  (recur more (conj acc link) scan))
                                                                [(assoc nodes key (assoc (nodes key) :links acc)) scan]))
                                           nuheight (max height (+ (- (scan-lowest-y scan (+ xpos width) line-padding) nuy) line-padding) (+ (- (scan-lowest-y scan xpos 0) nuy) line-padding))
-                                          nodes (update-in nodes 
-                                                           [key :links] 
+                                          nodes (update-in nodes
+                                                           [key :links]
                                                            (fn [links]
-                                                             (vec (map (fn [{[{:keys [dir ypos]} & {}] :legs :as link}]
+                                                             (vec (map (fn [{[{:keys [dir ypos]}] :legs :as link}]
                                                                          (assoc-in link
-                                                                                   [:legs 0 :ypos] 
+                                                                                   [:legs 0 :ypos]
                                                                                    (cond (horizontal dir) ypos
                                                                                          (= dir :down) (+ nuy nuheight)
                                                                                          true (- nuy line-wid))))
