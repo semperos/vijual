@@ -489,8 +489,8 @@
 (defn shuffle-nodes
   "Randomly swaps two nodes of the graph"
   [pos nodes]
-  (let [a (rand-elt nodes)
-        b (rand-elt nodes)
+  (let [a (rand-nth nodes)
+        b (rand-nth (vec (disj (set nodes) a)))
         an (pos a)
         bn (pos b)]
     (merge pos 
